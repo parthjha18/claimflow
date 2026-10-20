@@ -88,6 +88,7 @@ export function MonthlySpendChart({ columns, mode }: Props) {
             let acc = 0;
             return (
               <g key={c.month}>
+                {hover?.i === i && <rect className="hover-band" x={M.left + band * i} y={M.top} width={band} height={plotH} />}
                 {segs.map((s, k) => {
                   const yTop = y(acc + s.v);
                   const yBottom = y(acc);

@@ -273,7 +273,7 @@ dialog.modal::backdrop { background: rgb(8 12 22 / 55%); }
 .viz .axis-line { stroke: var(--axis); stroke-width: 1; }
 .viz .tick { fill: var(--ink-muted); font-size: 11px; }
 .viz .col-hit { fill: transparent; cursor: default; outline: none; }
-.viz .col-hit:hover, .viz .col-hit:focus-visible { fill: var(--surface-2); }
+.viz .hover-band { fill: var(--surface-2); }   /* drawn behind the bars; the hit area above stays transparent */
 .viz .col-hit:focus-visible { stroke: var(--primary); stroke-width: 2; }
 .viz .peak-label { fill: var(--text); font-size: 11px; font-weight: 650; }
 .viz-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 20px 14px; font-size: 0.85rem; }
