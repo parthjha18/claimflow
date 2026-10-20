@@ -55,7 +55,9 @@ public interface ClaimRepository extends JpaRepository<Claim, UUID> {
     /** Candidates for the escalation job; the actual change is re-checked per claim under its own lock. */
     @Query("""
             select c.id from Claim c
-            where c.status = com.claimflow.claim.domain.ClaimStatus.SUBMITTED and c.statusChangedAt < :cutoffBefore
+            where c.organizationId = :orgId and c.status = com.claimflow.claim.domain.ClaimStatus.SUBMITTED
+              and c.statusChangedAt < :cutoff
+            order by c.statusChangedAt
             """)
-    List<UUID> findIdsSubmittedBefore(Instant cutoffBefore);
+    List<UUID> findOverdueSubmitted(UUID orgId, Instant cutoff);
 }
