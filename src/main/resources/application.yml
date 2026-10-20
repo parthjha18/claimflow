@@ -56,3 +56,7 @@ claimflow:
       secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
       access-ttl: PT15M
       refresh-ttl: P7D
+
+  storage:
+    type: local
+    local-root: ${STORAGE_ROOT:./uploads}
