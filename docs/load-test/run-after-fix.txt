@@ -1,0 +1,243 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /k6/load-test.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 40 max VUs, 3m5s max duration (incl. graceful stop):
+              * submit: 20 looping VUs for 30s (exec: submitFlow, gracefulStop: 30s)
+              * approve: 3000 iterations shared among 20 VUs (maxDuration: 2m0s, exec: approveFlow, startTime: 35s, gracefulStop: 30s)
+
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+submit    [   1% ] 20 VUs   00.2s/30s
+
+submit    [   4% ] 20 VUs   01.2s/30s
+
+submit    [   7% ] 20 VUs   02.2s/30s
+
+submit    [  11% ] 20 VUs   03.2s/30s
+
+submit    [  14% ] 20 VUs   04.2s/30s
+
+submit    [  17% ] 20 VUs   05.2s/30s
+
+submit    [  21% ] 20 VUs   06.2s/30s
+
+submit    [  24% ] 20 VUs   07.2s/30s
+
+submit    [  27% ] 20 VUs   08.2s/30s
+
+submit    [  31% ] 20 VUs   09.2s/30s
+
+submit    [  34% ] 20 VUs   10.2s/30s
+
+submit    [  37% ] 20 VUs   11.2s/30s
+
+submit    [  41% ] 20 VUs   12.2s/30s
+time="2026-10-20T14:14:27Z" level=warning msg="The test has generated metrics with 100309 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+
+submit    [  44% ] 20 VUs   13.2s/30s
+
+submit    [  47% ] 20 VUs   14.2s/30s
+
+submit    [  51% ] 20 VUs   15.2s/30s
+
+submit    [  54% ] 20 VUs   16.2s/30s
+
+submit    [  57% ] 20 VUs   17.2s/30s
+
+submit    [  61% ] 20 VUs   18.2s/30s
+
+submit    [  64% ] 20 VUs   19.2s/30s
+
+submit    [  67% ] 20 VUs   20.2s/30s
+
+submit    [  71% ] 20 VUs   21.2s/30s
+
+submit    [  74% ] 20 VUs   22.2s/30s
+
+submit    [  77% ] 20 VUs   23.2s/30s
+
+submit    [  81% ] 20 VUs   24.3s/30s
+
+submit    [  84% ] 20 VUs   25.2s/30s
+
+submit    [  87% ] 20 VUs   26.2s/30s
+
+submit    [  91% ] 20 VUs   27.2s/30s
+time="2026-10-20T14:14:42Z" level=warning msg="The test has generated metrics with 200128 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+
+submit    [  94% ] 20 VUs   28.2s/30s
+
+submit    [  97% ] 20 VUs   29.2s/30s
+
+
+
+
+
+
+approve   [   0% ] 20 VUs  0m00.2s/2m0s  0000/3000 shared iters
+
+running (1m00.0s), 20/40 VUs, 18275 complete and 0 interrupted iterations
+approve   [  30% ] 20 VUs  0m01.2s/2m0s  0909/3000 shared iters
+
+running (1m01.0s), 20/40 VUs, 18731 complete and 0 interrupted iterations
+approve   [  46% ] 20 VUs  0m02.2s/2m0s  1365/3000 shared iters
+
+running (1m02.0s), 20/40 VUs, 19665 complete and 0 interrupted iterations
+approve   [  77% ] 20 VUs  0m03.2s/2m0s  2299/3000 shared iters
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration{endpoint:approve}
+    ✓ 'p(95)<500' p(95)=52.95ms
+
+    http_req_duration{endpoint:submit}
+    ✓ 'p(95)<500' p(95)=45.24ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 48294   772.696734/s
+    checks_succeeded...: 100.00% 48294 out of 48294
+    checks_failed......: 0.00%   0 out of 48294
+
+    ✓ submit 200
+    ✓ status SUBMITTED
+    ✓ replay 200
+    ✓ replay flagged
+    ✓ approve 200
+    ✓ status MANAGER_APPROVED
+    ✓ duplicate approve is 409
+
+    CUSTOM
+    double_approve_rejected_409....: 600   9.59991/s
+    idempotent_replays.............: 3481  55.695476/s
+
+    HTTP
+    http_req_duration..............: avg=14.14ms min=512.58µs med=10.71ms max=557.44ms p(90)=28.08ms p(95)=37.53ms
+      { endpoint:approve }.........: avg=21.09ms min=1.73ms   med=14.88ms max=235.36ms p(90)=38.58ms p(95)=52.95ms
+      { endpoint:submit }..........: avg=19.36ms min=2.52ms   med=15.63ms max=183.65ms p(90)=34.77ms p(95)=45.24ms
+      { expected_response:true }...: avg=14.14ms min=512.58µs med=10.71ms max=557.44ms p(90)=28.08ms p(95)=37.53ms
+    http_req_failed................: 0.00% 0 out of 47856
+    http_reqs......................: 47856 765.6888/s
+
+    EXECUTION
+    iteration_duration.............: avg=33.05ms min=2.18ms   med=27.3ms  max=342.82ms p(90)=57.85ms p(95)=74.52ms
+    iterations.....................: 20366 325.852936/s
+    vus............................: 20    min=0          max=20
+    vus_max........................: 40    min=40         max=40
+
+    NETWORK
+    data_received..................: 51 MB 820 kB/s
+    data_sent......................: 28 MB 449 kB/s
+
+
+
+
+running (1m02.5s), 00/40 VUs, 20366 complete and 0 interrupted iterations

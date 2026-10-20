@@ -1,0 +1,303 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /k6/load-test.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 40 max VUs, 3m5s max duration (incl. graceful stop):
+              * submit: 20 looping VUs for 30s (exec: submitFlow, gracefulStop: 30s)
+              * approve: 3000 iterations shared among 20 VUs (maxDuration: 2m0s, exec: approveFlow, startTime: 35s, gracefulStop: 30s)
+
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+Run       [ 100% ] setup()
+submit    [   0% ]
+approve   [   0% ]
+
+submit    [   3% ] 20 VUs   00.9s/30s
+
+submit    [   6% ] 20 VUs   01.9s/30s
+
+submit    [  10% ] 20 VUs   02.9s/30s
+
+submit    [  13% ] 20 VUs   03.9s/30s
+
+submit    [  16% ] 20 VUs   04.9s/30s
+
+submit    [  20% ] 20 VUs   05.9s/30s
+
+submit    [  23% ] 20 VUs   06.9s/30s
+
+submit    [  26% ] 20 VUs   07.9s/30s
+
+submit    [  30% ] 20 VUs   08.9s/30s
+
+submit    [  33% ] 20 VUs   09.9s/30s
+time="2026-10-20T14:11:21Z" level=warning msg="The test has generated metrics with 100354 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+
+submit    [  36% ] 20 VUs   10.9s/30s
+
+submit    [  40% ] 20 VUs   11.9s/30s
+
+submit    [  43% ] 20 VUs   12.9s/30s
+
+submit    [  46% ] 20 VUs   13.9s/30s
+
+submit    [  50% ] 20 VUs   14.9s/30s
+
+submit    [  53% ] 20 VUs   15.9s/30s
+
+submit    [  56% ] 20 VUs   16.9s/30s
+
+submit    [  60% ] 20 VUs   17.9s/30s
+
+submit    [  63% ] 20 VUs   18.9s/30s
+
+submit    [  66% ] 20 VUs   19.9s/30s
+
+submit    [  70% ] 20 VUs   20.9s/30s
+
+submit    [  73% ] 20 VUs   21.9s/30s
+
+submit    [  76% ] 20 VUs   22.9s/30s
+
+submit    [  80% ] 20 VUs   23.9s/30s
+
+submit    [  83% ] 20 VUs   24.9s/30s
+
+submit    [  86% ] 20 VUs   25.9s/30s
+time="2026-10-20T14:11:37Z" level=warning msg="The test has generated metrics with 200038 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+
+submit    [  90% ] 20 VUs   26.9s/30s
+
+submit    [  93% ] 20 VUs   27.9s/30s
+
+submit    [  96% ] 20 VUs   28.9s/30s
+
+submit    [ 100% ] 20 VUs   29.9s/30s
+
+
+
+
+
+
+approve   [  13% ] 20 VUs  0m00.9s/2m0s  0381/3000 shared iters
+
+approve   [  44% ] 20 VUs  0m01.9s/2m0s  1319/3000 shared iters
+
+approve   [  71% ] 20 VUs  0m02.9s/2m0s  2130/3000 shared iters
+
+approve   [  71% ] 20 VUs  0m03.9s/2m0s  2130/3000 shared iters
+
+approve   [  71% ] 20 VUs  0m04.9s/2m0s  2130/3000 shared iters
+
+approve   [  71% ] 20 VUs  0m05.9s/2m0s  2130/3000 shared iters
+
+approve   [  71% ] 20 VUs  0m06.9s/2m0s  2130/3000 shared iters
+
+running (1m00.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m07.9s/2m0s  2130/3000 shared iters
+
+running (1m01.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m08.9s/2m0s  2130/3000 shared iters
+
+running (1m02.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m09.9s/2m0s  2130/3000 shared iters
+
+running (1m03.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m10.9s/2m0s  2130/3000 shared iters
+
+running (1m04.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m11.9s/2m0s  2130/3000 shared iters
+
+running (1m05.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m12.9s/2m0s  2130/3000 shared iters
+
+running (1m06.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m13.9s/2m0s  2130/3000 shared iters
+
+running (1m07.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m14.9s/2m0s  2130/3000 shared iters
+
+running (1m08.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m15.9s/2m0s  2130/3000 shared iters
+
+running (1m09.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m16.9s/2m0s  2130/3000 shared iters
+
+running (1m10.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m17.9s/2m0s  2130/3000 shared iters
+
+running (1m11.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m18.9s/2m0s  2130/3000 shared iters
+
+running (1m12.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m19.9s/2m0s  2130/3000 shared iters
+
+running (1m13.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m20.9s/2m0s  2130/3000 shared iters
+
+running (1m14.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m21.9s/2m0s  2130/3000 shared iters
+
+running (1m15.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m22.9s/2m0s  2130/3000 shared iters
+
+running (1m16.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m23.9s/2m0s  2130/3000 shared iters
+
+running (1m17.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m24.9s/2m0s  2130/3000 shared iters
+
+running (1m18.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m25.9s/2m0s  2130/3000 shared iters
+
+running (1m19.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m26.9s/2m0s  2130/3000 shared iters
+
+running (1m20.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m27.9s/2m0s  2130/3000 shared iters
+
+running (1m21.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m28.9s/2m0s  2130/3000 shared iters
+
+running (1m22.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m29.9s/2m0s  2130/3000 shared iters
+
+running (1m23.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m30.9s/2m0s  2130/3000 shared iters
+
+running (1m24.0s), 20/40 VUs, 20115 complete and 0 interrupted iterations
+approve   [  71% ] 20 VUs  0m31.9s/2m0s  2130/3000 shared iters
+
+running (1m25.0s), 20/40 VUs, 20210 complete and 0 interrupted iterations
+approve   [  74% ] 20 VUs  0m32.9s/2m0s  2225/3000 shared iters
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=99.95%
+
+    http_req_duration{endpoint:approve}
+    ✓ 'p(95)<500' p(95)=52.48ms
+
+    http_req_duration{endpoint:submit}
+    ✓ 'p(95)<500' p(95)=38.96ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.02%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 49782  579.773962/s
+    checks_succeeded...: 99.95% 49762 out of 49782
+    checks_failed......: 0.04%  20 out of 49782
+
+    ✓ submit 200
+    ✓ status SUBMITTED
+    ✓ replay 200
+    ✓ replay flagged
+    ✗ approve 200
+      ↳  99% — ✓ 2992 / ✗ 8
+    ✗ status MANAGER_APPROVED
+      ↳  99% — ✓ 2992 / ✗ 8
+    ✗ duplicate approve is 409
+      ↳  99% — ✓ 596 / ✗ 4
+
+    CUSTOM
+    double_approve_rejected_409....: 596   6.941169/s
+    idempotent_replays.............: 3606  41.996402/s
+
+    HTTP
+    http_req_duration..............: avg=25.8ms   min=595.16µs med=10.85ms max=30.18s   p(90)=26.22ms p(95)=34.36ms
+      { endpoint:approve }.........: avg=200.86ms min=2.05ms   med=15.41ms max=30.18s   p(90)=37.38ms p(95)=52.48ms
+      { endpoint:submit }..........: avg=17.08ms  min=2.44ms   med=13.95ms max=165.67ms p(90)=30.15ms p(95)=38.96ms
+      { expected_response:true }...: avg=19.69ms  min=595.16µs med=10.85ms max=30.18s   p(90)=26.21ms p(95)=34.33ms
+    http_req_failed................: 0.02% 10 out of 49219
+    http_reqs......................: 49219 573.217119/s
+
+    EXECUTION
+    iteration_duration.............: avg=60.79ms  min=2.13ms   med=26.69ms max=30.22s   p(90)=55.99ms p(95)=69.92ms
+    iterations.....................: 20985 244.396701/s
+    vus............................: 20    min=0           max=20
+    vus_max........................: 40    min=40          max=40
+
+    NETWORK
+    data_received..................: 53 MB 614 kB/s
+    data_sent......................: 29 MB 337 kB/s
+
+
+
+
+running (1m25.9s), 00/40 VUs, 20985 complete and 0 interrupted iterations
