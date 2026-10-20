@@ -7,3 +7,6 @@ uploads/
 *.log
 .env
 k6/results/
+
+frontend/node_modules/
+frontend/dist/
