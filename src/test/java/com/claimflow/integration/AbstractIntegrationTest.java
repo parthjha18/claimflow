@@ -20,6 +20,7 @@ import org.testcontainers.utility.DockerImageName;
  * Spring context at them. Reusing the containers keeps the integration suite fast.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@org.springframework.context.annotation.Import(TestMailConfig.class)
 public abstract class AbstractIntegrationTest {
 
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
@@ -70,6 +71,34 @@ public abstract class AbstractIntegrationTest {
         h.setContentType(MediaType.MULTIPART_FORM_DATA);
         h.setBearerAuth(token);
         return rest.exchange(path, HttpMethod.POST, new HttpEntity<>(form, h), JsonNode.class);
+    }
+
+    /** Creates a DRAFT with one item (receipt attached when {@code receipt}); returns the claim id. */
+    protected String draftClaim(Actor owner, String category, String amount, boolean receipt) {
+        JsonNode created = call(HttpMethod.POST, "/api/v1/claims", owner.token(), java.util.Map.of(
+                "title", "Claim " + amount, "items", java.util.List.of(java.util.Map.of("category", category,
+                        "amount", amount, "expenseDate", java.time.LocalDate.now().minusDays(1).toString(),
+                        "description", "Item")))).getBody();
+        String id = created.get("claim").get("id").asText();
+        if (receipt) {
+            String itemId = created.get("items").get(0).get("id").asText();
+            ResponseEntity<JsonNode> up = upload("/api/v1/claims/" + id + "/items/" + itemId + "/receipt",
+                    owner.token(), "receipt.pdf", "application/pdf", "%PDF-1.4".getBytes());
+            if (up.getStatusCode().isError()) {
+                throw new IllegalStateException("receipt upload failed: " + up.getBody());
+            }
+        }
+        return id;
+    }
+
+    protected ResponseEntity<JsonNode> act(String claimId, String action, Actor who, String comment, String... headers) {
+        return call(HttpMethod.POST, "/api/v1/claims/" + claimId + "/" + action, who.token(),
+                comment == null ? null : java.util.Map.of("comment", comment), headers);
+    }
+
+    protected String statusOf(String claimId, Actor viewer) {
+        return call(HttpMethod.GET, "/api/v1/claims/" + claimId, viewer.token(), null)
+                .getBody().get("claim").get("status").asText();
     }
 
     public record Actor(String id, String email, String token) {
