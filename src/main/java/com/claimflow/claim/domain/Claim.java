@@ -117,6 +117,10 @@ public class Claim extends AuditedEntity {
         this.submittedAt = Instant.now();
     }
 
+    public void clearApprover() {
+        this.currentApprover = null;
+    }
+
     public void reassignApprover(User approver) {
         this.currentApprover = approver;
         this.statusChangedAt = Instant.now();
