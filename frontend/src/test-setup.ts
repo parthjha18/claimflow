@@ -15,3 +15,9 @@ class MemoryStorage implements Storage {
 for (const name of ['localStorage', 'sessionStorage'] as const) {
   Object.defineProperty(globalThis, name, { value: new MemoryStorage(), configurable: true, writable: true });
 }
+
+// jsdom does not implement the modal <dialog> methods the Modal component relies on.
+if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.showModal) {
+  HTMLDialogElement.prototype.showModal = function showModal() { this.setAttribute('open', ''); };
+  HTMLDialogElement.prototype.close = function close() { this.removeAttribute('open'); this.dispatchEvent(new Event('close')); };
+}
