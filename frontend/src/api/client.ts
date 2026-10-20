@@ -36,6 +36,14 @@ export function storeTokens(tokens: Pick<TokenResponse, 'accessToken' | 'refresh
   }
 }
 
+export function getRefreshToken(): string | null {
+  try {
+    return localStorage.getItem(REFRESH_KEY);
+  } catch {
+    return null;
+  }
+}
+
 export function hasStoredSession(): boolean {
   try {
     return !!localStorage.getItem(REFRESH_KEY);

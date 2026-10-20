@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/endpoints';
 import {
-  hasStoredSession, refreshSession, setSessionExpiredHandler, storeTokens,
+  getRefreshToken, hasStoredSession, refreshSession, setSessionExpiredHandler, storeTokens,
 } from '../api/client';
 import type { TokenResponse, User } from '../api/types';
 
@@ -60,8 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login: async (email, password) => startSession(await api.login(email, password)),
     register: async (b) => startSession(await api.register(b)),
     logout: async () => {
+      const token = getRefreshToken();
       storeTokens(null);
       signedOut();
+      // tell the server too, so a copied refresh token stops working; failing to reach it must not block sign-out
+      if (token) api.logout(token).catch(() => undefined);
     },
   }), [status, user, startSession, signedOut]);
 

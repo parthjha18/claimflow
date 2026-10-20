@@ -18,6 +18,9 @@ export const api = {
   register: (b: { organizationName: string; adminFullName: string; adminEmail: string; adminPassword: string }) =>
     request<TokenResponse>(`${v1}/auth/register`, { method: 'POST', body: b, anonymous: true }),
 
+  logout: (refreshToken: string) =>
+    request<void>(`${v1}/auth/logout`, { method: 'POST', body: { refreshToken }, anonymous: true }),
+
   // users
   me: () => request<User>(`${v1}/users/me`),
   listUsers: (p: PageParams = {}) => request<Page<User>>(`${v1}/users`, { query: { size: 100, ...p } }),
