@@ -1,6 +1,14 @@
 package com.claimflow.integration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -21,6 +29,23 @@ public abstract class AbstractIntegrationTest {
     static {
         POSTGRES.start();
         REDIS.start();
+    }
+
+    @Autowired
+    protected TestRestTemplate rest;
+
+    /** Calls the running app over real HTTP. {@code headers} are name,value pairs. */
+    protected ResponseEntity<JsonNode> call(HttpMethod method, String path, String token, Object body,
+                                            String... headers) {
+        HttpHeaders h = new HttpHeaders();
+        h.setContentType(MediaType.APPLICATION_JSON);
+        if (token != null) {
+            h.setBearerAuth(token);
+        }
+        for (int i = 0; i + 1 < headers.length; i += 2) {
+            h.set(headers[i], headers[i + 1]);
+        }
+        return rest.exchange(path, method, new HttpEntity<>(body, h), JsonNode.class);
     }
 
     @DynamicPropertySource
