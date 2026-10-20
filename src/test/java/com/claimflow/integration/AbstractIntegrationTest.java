@@ -144,5 +144,6 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.data.redis.host", REDIS::getHost);
         registry.add("spring.data.redis.port", () -> REDIS.getMappedPort(6379));
         registry.add("claimflow.storage.local-root", () -> STORAGE_DIR.toString());
+        registry.add("spring.jpa.properties.hibernate.generate_statistics", () -> "true");
     }
 }
