@@ -4,6 +4,8 @@ import type { Role } from './api/types';
 import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { MyClaimsPage } from './pages/MyClaimsPage';
+import { NewClaimPage } from './pages/NewClaimPage';
 
 const HOME: Record<Role, string> = { EMPLOYEE: '/claims', MANAGER: '/approvals', FINANCE: '/approvals', ADMIN: '/users' };
 
@@ -29,6 +31,8 @@ export function App() {
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route index element={<RoleHome />} />
+          <Route path="claims" element={<MyClaimsPage />} />
+          <Route path="claims/new" element={<NewClaimPage />} />
           <Route path="*" element={<p className="muted">This screen is not built yet.</p>} />
         </Route>
       </Route>

@@ -217,3 +217,4 @@ dialog.modal::backdrop { background: rgb(8 12 22 / 55%); }
 .chip { border: 1px solid var(--border-strong); background: var(--surface); border-radius: 999px; padding: 4px 11px; font-size: 0.82rem; cursor: pointer; font-weight: 550; }
 .chip:hover { border-color: var(--primary); color: var(--primary); }
 @media (max-width: 860px) { .auth { grid-template-columns: 1fr; } .auth-side { display: none; } }
+.nowrap { white-space: nowrap; }
