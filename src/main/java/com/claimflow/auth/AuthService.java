@@ -66,6 +66,10 @@ public class AuthService {
         return tokensFor(refreshTokens.consume(req.refreshToken()));
     }
 
+    public void logout(RefreshRequest req) {
+        refreshTokens.revoke(req.refreshToken());
+    }
+
     private TokenResponse tokensFor(User user) {
         return new TokenResponse(jwt.createAccessToken(user), refreshTokens.issue(user), "Bearer",
                 jwt.accessTtlSeconds(), user.getId(), user.getOrganizationId(), user.getRole().name());

@@ -68,6 +68,12 @@ public class RefreshTokenService {
         return user;
     }
 
+    /** Logout: revokes the presented token. Idempotent, and silent about unknown tokens (nothing to learn from it). */
+    @Transactional
+    public void revoke(String raw) {
+        tokens.findByTokenHash(hash(raw)).ifPresent(RefreshToken::revoke);
+    }
+
     private static ApiException invalid() {
         return new ApiException(HttpStatus.UNAUTHORIZED, "INVALID_REFRESH_TOKEN", "Refresh token is invalid or expired");
     }

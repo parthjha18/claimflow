@@ -50,6 +50,25 @@ class AuthIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void logoutRevokesTheRefreshTokenAndIsIdempotent() {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+        call(HttpMethod.POST, "/api/v1/auth/register", null, registration(suffix));
+        String refresh = call(HttpMethod.POST, "/api/v1/auth/login", null,
+                Map.of("email", "admin-" + suffix + "@example.com", "password", "Passw0rd!"))
+                .getBody().get("refreshToken").asText();
+
+        assertThat(call(HttpMethod.POST, "/api/v1/auth/logout", null, Map.of("refreshToken", refresh)).getStatusCode())
+                .isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(call(HttpMethod.POST, "/api/v1/auth/refresh", null, Map.of("refreshToken", refresh)).getStatusCode())
+                .as("a signed-out token can no longer be used").isEqualTo(HttpStatus.UNAUTHORIZED);
+        // repeating it, or sending garbage, is harmless and reveals nothing
+        assertThat(call(HttpMethod.POST, "/api/v1/auth/logout", null, Map.of("refreshToken", refresh)).getStatusCode())
+                .isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(call(HttpMethod.POST, "/api/v1/auth/logout", null, Map.of("refreshToken", "not-a-real-token")).getStatusCode())
+                .isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
     void wrongPasswordIsUnauthorizedWithErrorJson() {
         String suffix = UUID.randomUUID().toString().substring(0, 8);
         call(HttpMethod.POST, "/api/v1/auth/register", null, registration(suffix));

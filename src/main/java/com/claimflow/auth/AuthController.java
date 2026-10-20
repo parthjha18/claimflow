@@ -34,6 +34,13 @@ public class AuthController {
         return service.login(request);
     }
 
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Revoke a refresh token (sign out). Always 204, even for unknown tokens.")
+    public void logout(@Valid @RequestBody RefreshRequest request) {
+        service.logout(request);
+    }
+
     @PostMapping("/refresh")
     @Operation(summary = "Rotate a refresh token; the presented token is revoked")
     public TokenResponse refresh(@Valid @RequestBody RefreshRequest request) {
