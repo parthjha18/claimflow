@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: claimflow
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/claimflow}
+    username: ${DB_USER:claimflow}
+    password: ${DB_PASSWORD:claimflow}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate        # schema is owned by Flyway, Hibernate only verifies it
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cache:
+    type: redis
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
