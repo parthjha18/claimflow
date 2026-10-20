@@ -23,6 +23,12 @@ describe('availableActions', () => {
     expect(res.note).toContain('maker-checker');
   });
 
+  it('tells a plain employee who their claim is waiting for, without the maker-checker lecture', () => {
+    const res = availableActions(user('emp', 'EMPLOYEE'), claim({}));
+    expect(res.actions).toEqual([]);
+    expect(res.note).toBe('Waiting for Mina Manager to review.');
+  });
+
   it('small claims go from manager approval straight to payment', () => {
     expect(availableActions(user('fin', 'FINANCE'), claim({ status: 'MANAGER_APPROVED', requiresFinance: false })).actions[0]).toBe('pay');
   });

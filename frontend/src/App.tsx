@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { MyClaimsPage } from './pages/MyClaimsPage';
 import { NewClaimPage } from './pages/NewClaimPage';
+import { ClaimDetailPage } from './pages/ClaimDetailPage';
 
 const HOME: Record<Role, string> = { EMPLOYEE: '/claims', MANAGER: '/approvals', FINANCE: '/approvals', ADMIN: '/users' };
 
@@ -33,6 +34,7 @@ export function App() {
           <Route index element={<RoleHome />} />
           <Route path="claims" element={<MyClaimsPage />} />
           <Route path="claims/new" element={<NewClaimPage />} />
+          <Route path="claims/:id" element={<ClaimDetailPage />} />
           <Route path="*" element={<p className="muted">This screen is not built yet.</p>} />
         </Route>
       </Route>

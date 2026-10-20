@@ -17,7 +17,12 @@ export function availableActions(user: { id: string; role: Role }, c: ClaimSumma
   if (!pending) return { actions: [] };
 
   if (user.id === c.claimantId) {
-    return { actions: [], note: 'You filed this claim, so someone else has to decide on it (maker-checker).' };
+    const waiting = c.status === 'SUBMITTED' ? `Waiting for ${c.currentApproverName ?? 'your manager'} to review.`
+      : c.status === 'MANAGER_APPROVED' ? (c.requiresFinance ? 'Your manager approved it. Waiting for the finance team.' : 'Your manager approved it. Waiting for payment.')
+      : 'Finance approved it. Waiting for payment.';
+    // approvers and finance staff file claims too: say plainly why they get no buttons on their own
+    const why = user.role === 'MANAGER' || user.role === 'FINANCE' ? ' You cannot decide on your own claim (maker-checker).' : '';
+    return { actions: [], note: waiting + why };
   }
 
   switch (c.status) {
