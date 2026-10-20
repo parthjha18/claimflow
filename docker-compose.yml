@@ -1,4 +1,4 @@
-# `docker compose up --build` starts Postgres, Redis and the app (with demo data) on http://localhost:8080
+# `docker compose up --build` starts Postgres, Redis, the API (http://localhost:8080) and the web UI (http://localhost:3000)
 services:
   postgres:
     image: postgres:16-alpine
@@ -40,6 +40,13 @@ services:
       - uploads:/data/uploads
     ports:
       - "8080:8080"
+
+  web:
+    build: ./frontend
+    depends_on:
+      - app
+    ports:
+      - "3000:80"
 
 volumes:
   pgdata:
