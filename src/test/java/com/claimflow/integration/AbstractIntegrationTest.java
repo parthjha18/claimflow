@@ -48,6 +48,41 @@ public abstract class AbstractIntegrationTest {
         return rest.exchange(path, method, new HttpEntity<>(body, h), JsonNode.class);
     }
 
+    public record Actor(String id, String email, String token) {
+    }
+
+    /** One tenant with a user of every role: employee -> manager -> boss, plus finance and admin. */
+    public record TestOrg(Actor admin, Actor boss, Actor manager, Actor employee, Actor finance) {
+    }
+
+    protected TestOrg createOrg() {
+        String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
+        JsonNode reg = call(HttpMethod.POST, "/api/v1/auth/register", null, java.util.Map.of(
+                "organizationName", "Org " + suffix, "adminFullName", "Admin",
+                "adminEmail", "admin-" + suffix + "@t.com", "adminPassword", "Passw0rd!")).getBody();
+        Actor admin = new Actor(reg.get("userId").asText(), "admin-" + suffix + "@t.com", reg.get("accessToken").asText());
+        Actor boss = createUser(admin, "boss-" + suffix + "@t.com", "Boss", "MANAGER", null);
+        Actor manager = createUser(admin, "mgr-" + suffix + "@t.com", "Manager", "MANAGER", boss.id());
+        Actor employee = createUser(admin, "emp-" + suffix + "@t.com", "Employee", "EMPLOYEE", manager.id());
+        Actor finance = createUser(admin, "fin-" + suffix + "@t.com", "Finance", "FINANCE", null);
+        return new TestOrg(admin, boss, manager, employee, finance);
+    }
+
+    protected Actor createUser(Actor admin, String email, String name, String role, String managerId) {
+        java.util.Map<String, Object> body = new java.util.HashMap<>(java.util.Map.of(
+                "email", email, "password", "Passw0rd!", "fullName", name, "role", role));
+        if (managerId != null) {
+            body.put("managerId", managerId);
+        }
+        ResponseEntity<JsonNode> created = call(HttpMethod.POST, "/api/v1/users", admin.token(), body);
+        if (created.getStatusCode().isError()) {
+            throw new IllegalStateException("createUser failed: " + created.getBody());
+        }
+        JsonNode login = call(HttpMethod.POST, "/api/v1/auth/login", null,
+                java.util.Map.of("email", email, "password", "Passw0rd!")).getBody();
+        return new Actor(created.getBody().get("id").asText(), email, login.get("accessToken").asText());
+    }
+
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
