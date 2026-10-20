@@ -48,8 +48,9 @@ public interface ClaimRepository extends JpaRepository<Claim, UUID> {
             where c.organizationId = :orgId
               and c.status in (com.claimflow.claim.domain.ClaimStatus.MANAGER_APPROVED,
                                com.claimflow.claim.domain.ClaimStatus.FINANCE_APPROVED)
+              and c.claimant.id <> :excludeClaimantId
             """)
-    Page<Claim> findPendingForFinance(UUID orgId, Pageable pageable);
+    Page<Claim> findPendingForFinance(UUID orgId, UUID excludeClaimantId, Pageable pageable);
 
     /** Candidates for the escalation job; the actual change is re-checked per claim under its own lock. */
     @Query("""
