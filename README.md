@@ -7,21 +7,26 @@ finance marks them paid. Every organisation is a separate tenant. The interestin
 concurrency (optimistic locking, idempotency keys), a strict state machine, and keeping the database
 authoritative (Flyway owns the schema, Hibernate only validates it).
 
+There is also a web UI (React + TypeScript) for every role: employees file and track claims, managers and finance
+work an approval queue, admins manage users and policy and read spend reports.
+
 **Stack:** Java 21 · Spring Boot 3.5 · PostgreSQL 16 · Flyway · Spring Security + JWT · Redis · springdoc (Swagger) ·
-JUnit 5 / Mockito / Testcontainers · Docker Compose · GitHub Actions · k6
+React 19 · TypeScript · Vite · TanStack Query · nginx ·
+JUnit 5 / Mockito / Testcontainers · Vitest / Testing Library · Docker Compose · GitHub Actions · k6
 
 ---
 
 ## Contents
 1. [Quick start](#quick-start)
-2. [Architecture](#architecture)
-3. [Data model](#data-model)
-4. [Workflow state machine](#workflow-state-machine)
-5. [API overview](#api-overview)
-6. [Design decisions](#design-decisions)
-7. [Testing](#testing)
-8. [Load test results](#load-test-results)
-9. [Known limitations](#known-limitations)
+2. [Web UI](#web-ui)
+3. [Architecture](#architecture)
+4. [Data model](#data-model)
+5. [Workflow state machine](#workflow-state-machine)
+6. [API overview](#api-overview)
+7. [Design decisions](#design-decisions)
+8. [Testing](#testing)
+9. [Load test results](#load-test-results)
+10. [Known limitations](#known-limitations)
 
 ---
 
@@ -31,10 +36,11 @@ JUnit 5 / Mockito / Testcontainers · Docker Compose · GitHub Actions · k6
 ```bash
 docker compose up --build
 ```
-This starts the app, PostgreSQL and Redis. The app loads a demo organisation on first start (the `demo` profile).
+This starts PostgreSQL, Redis, the API and the web UI. The API loads a demo organisation on first start (the `demo` profile).
 
 | | |
 |---|---|
+| **Web UI** | http://localhost:3000 |
 | API | http://localhost:8080 |
 | Swagger UI | http://localhost:8080/swagger-ui.html |
 | Health | http://localhost:8080/actuator/health |
@@ -52,7 +58,7 @@ Demo users (password for all: `Demo@1234`):
 The seed contains claims in every state (draft, waiting for manager, waiting for finance, finance-approved, paid,
 rejected, changes-requested) and four months of paid history for the reports.
 
-Try it:
+Open http://localhost:3000 and use the demo chips on the sign-in screen, or try the API directly:
 ```bash
 TOKEN=$(curl -s localhost:8080/api/v1/auth/login -H 'Content-Type: application/json' \
   -d '{"email":"rahul.manager@acme.demo","password":"Demo@1234"}' | python3 -c 'import sys,json;print(json.load(sys.stdin)["accessToken"])')
@@ -62,18 +68,21 @@ Remove `SPRING_PROFILES_ACTIVE: demo` from `docker-compose.yml` for an empty dat
 (at least 32 bytes) for anything other than a local demo.
 
 ### Without Docker for the app
-Needs JDK 21, Maven and a running PostgreSQL and Redis (for example `docker compose up postgres redis`, after
-adding `ports:` for them).
+Needs JDK 21, Maven, Node 22+ and a running PostgreSQL and Redis (for example `docker compose up postgres redis`,
+after adding `ports:` for them).
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=demo
+mvn spring-boot:run -Dspring-boot.run.profiles=demo      # API on :8080
+cd frontend && npm install && npm run dev                # UI on :5173, /api is proxied to :8080
 ```
 Configuration is by environment variable: `DB_URL`, `DB_USER`, `DB_PASSWORD`, `DB_POOL_SIZE`, `REDIS_HOST`,
 `REDIS_PORT`, `JWT_SECRET`, `STORAGE_ROOT`.
 
 ### Tests
 ```bash
-mvn test      # unit tests, no Docker needed
-mvn verify    # unit tests + integration tests (needs Docker: Testcontainers starts Postgres and Redis)
+mvn test      # backend unit tests, no Docker needed
+mvn verify    # backend unit + integration tests (needs Docker: Testcontainers starts Postgres and Redis)
+cd frontend && npm test          # UI unit and component tests
+cd frontend && npm run build     # type-check + production build
 ```
 
 ### Load test
@@ -86,11 +95,55 @@ docker run --rm -i --network claimflow_default -v "$PWD/k6:/k6" -e BASE_URL=http
 
 ---
 
+## Web UI
+
+A single-page app in [`frontend/`](frontend) (React 19, TypeScript, Vite, React Router, TanStack Query, hand-written CSS
+with light and dark themes). It talks to the API only through `/api`: Vite proxies it in development and nginx proxies it in
+Docker, so the browser always sees one origin and the backend needs no CORS configuration.
+
+| Screen | Who | What you can do |
+|---|---|---|
+| Sign in / Create organisation | everyone | Log in; demo chips fill the sample accounts; register a new company |
+| My claims | employee, manager, finance | Filter by status, sort, page through your claims |
+| New claim, claim detail | claimant | Add, edit and remove line items, attach receipts, see a live **policy pre-check**, submit |
+| Claim detail | everyone with access | Progress stepper, items with receipts, full approval history; decision buttons if it is your turn |
+| Approvals | manager, finance | Queue of claims waiting for you (oldest first) with a live count in the sidebar |
+| Spend report | admin, finance | Stacked monthly chart by category, category ranking, sortable table, period and status filters |
+| Users | admin | Add users, change role and manager, deactivate |
+| Policy | everyone (admin edits) | Read the rules; admins change limits and thresholds |
+
+| | |
+|---|---|
+| ![Sign in](docs/screenshots/login.jpg) | ![My claims, light theme](docs/screenshots/my-claims-light.jpg) |
+| ![Claim detail with progress stepper](docs/screenshots/claim-detail.jpg) | ![Spend report](docs/screenshots/spend-report.jpg) |
+
+How the UI handles the hard parts:
+- **Sessions.** The access token lives only in memory; the refresh token is in `localStorage` so a reload keeps you signed in.
+  Refresh tokens rotate and the server revokes the whole chain if an old one is replayed, so the client shares **one** in-flight
+  refresh between all requests and uses the Web Locks API so two browser tabs cannot race. Sign out calls `POST /auth/logout`,
+  which revokes the token on the server.
+- **Safe retries.** Every approve, reject, send-back, pay and submit sends an `Idempotency-Key`. A decision dialog creates its key
+  once when it opens, so a retry after a timeout reuses it (the server returns the first result) while a new dialog is a new decision.
+- **Conflicts.** If two approvers act at once the loser gets a 409; the UI explains it and reloads the claim instead of letting
+  the user act on stale data.
+- **Buttons are a convenience, not security.** Which buttons appear (maker-checker, "is it my turn") and the client-side policy
+  pre-check mirror the server's rules for a better experience, but the server re-checks everything. Role-guarded routes only redirect;
+  the API still answers 403.
+- **Charts** follow a validated palette (colour-blind separation and contrast checked against both card surfaces). Colour follows the
+  category, never its rank, so filtering does not repaint the survivors. Every chart has a legend where there is more than one series,
+  a hover and keyboard tooltip, an accessible description, and a table twin right below it.
+- **Production build** is served by nginx with a strict Content-Security-Policy, security headers, an SPA fallback and long-lived caching
+  for fingerprinted assets.
+
+---
+
 ## Architecture
 
 ```mermaid
 flowchart LR
-    client([Client / Swagger / k6]) -->|HTTPS + Bearer JWT| sec
+    ui([React UI in the browser]) --> web[nginx<br/>serves the UI,<br/>proxies /api]
+    web -->|Bearer JWT| sec
+    client([Swagger / k6 / API clients]) -->|Bearer JWT| sec
 
     subgraph app [Spring Boot application]
         sec[JwtAuthFilter<br/>stateless security] --> ctrl[Controllers<br/>validation, DTOs]
@@ -269,7 +322,7 @@ Interactive docs: `/swagger-ui.html`.
 | Area | Endpoint | Who |
 |---|---|---|
 | **Auth** | `POST /auth/register` create an organisation and its first ADMIN | public |
-| | `POST /auth/login`, `POST /auth/refresh` | public |
+| | `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` (revokes the refresh token) | public |
 | **Users** | `GET /users/me` | any |
 | | `POST /users`, `GET /users`, `GET /users/{id}`, `PUT /users/{id}` (name, role, manager, active) | ADMIN |
 | **Policy** | `GET /policy` (cached in Redis) | any |
@@ -377,7 +430,8 @@ add defence in depth and is the obvious next step.
 
 ## Testing
 
-`mvn verify` runs **83 tests** (40 unit, 43 integration); all pass locally and in GitHub Actions.
+`mvn verify` runs **84 backend tests** (40 unit, 44 integration) and `npm test` runs **39 UI tests**; all pass locally and in
+GitHub Actions.
 
 | Layer | What it proves |
 |---|---|
@@ -393,6 +447,13 @@ add defence in depth and is the obvious next step.
 | `Auth/UserManagement/DraftClaim/DemoSeed/SchemaMapping IT` | tokens and reuse detection, RBAC, tenant isolation, receipts, seed data, schema/entity agreement |
 
 Integration tests use Testcontainers (real PostgreSQL 16 and Redis 7) and call the running app over HTTP.
+
+UI tests (Vitest + Testing Library) cover: the API client (bearer header, error mapping, **one** shared refresh for parallel 401s,
+sign-out when refresh fails), the policy pre-check against the server's boundaries, which actions each role may take on a claim
+(including maker-checker), the decision dialog (a written reason is required; a retry **reuses the same Idempotency-Key**), chart
+accessibility and tooltips, and the login form. The app was also exercised in a real browser against the running stack: login and
+session restore, drafting, a policy rejection, submit, manager approval through the dialog, the report chart and tooltip, receipt
+upload through nginx, and the production build under its Content-Security-Policy.
 
 ---
 
@@ -440,8 +501,12 @@ run is the one to trust.
 
 ## Known limitations
 
-- **Access tokens stay valid until they expire (15 minutes)** after a user is deactivated; refresh tokens stop at
+- **Access tokens stay valid until they expire (15 minutes)** after a user is deactivated or signs out; refresh tokens stop at
   once. A token deny-list in Redis would close the gap.
+- **The refresh token is kept in `localStorage`,** so an XSS bug could read it. The strict CSP in the nginx config and the absence of
+  `innerHTML` in the UI reduce that risk; an httpOnly cookie with CSRF protection would remove it.
+- **The UI is desktop-first.** Narrow screens work (the navigation collapses to a top bar and tables scroll) but it has had less
+  polish than the wide layout.
 - **Notifications are at-most-once** and only logged; there is no real mail provider and no outbox.
 - **One escalation level per run;** the top of the hierarchy has nobody to escalate to and the claim stays put.
   Only the manager stage escalates (finance is a pool, not a person).
