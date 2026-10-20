@@ -257,3 +257,43 @@ dialog.modal::backdrop { background: rgb(8 12 22 / 55%); }
 .banner.warn { background: var(--s-submitted-bg); color: var(--s-submitted-fg); border-color: transparent; }
 .banner.danger { background: var(--s-rejected-bg); color: var(--s-rejected-fg); border-color: transparent; }
 .banner ul { margin: 6px 0 0; padding-left: 18px; }
+
+/* ---------- charts (palette validated with the dataviz validator against both card surfaces) ---------- */
+.viz {
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+  --grid: #e8eaf0; --axis: #cfd4df; --ink-muted: #667085;
+}
+@media (prefers-color-scheme: dark) {
+  .viz { --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+         --grid: #222a3d; --axis: #35405a; --ink-muted: #97a0b4; }
+}
+.viz-wrap { position: relative; padding: 8px 20px 18px; }
+.viz svg { display: block; overflow: visible; }
+.viz .grid-line { stroke: var(--grid); stroke-width: 1; }
+.viz .axis-line { stroke: var(--axis); stroke-width: 1; }
+.viz .tick { fill: var(--ink-muted); font-size: 11px; }
+.viz .col-hit { fill: transparent; cursor: default; outline: none; }
+.viz .col-hit:hover, .viz .col-hit:focus-visible { fill: var(--surface-2); }
+.viz .col-hit:focus-visible { stroke: var(--primary); stroke-width: 2; }
+.viz .peak-label { fill: var(--text); font-size: 11px; font-weight: 650; }
+.viz-legend { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 20px 14px; font-size: 0.85rem; }
+.viz-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.viz-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.viz-tip { position: absolute; z-index: 5; pointer-events: none; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: var(--shadow-lg); padding: 8px 11px; font-size: 0.82rem; min-width: 150px; transform: translate(-50%, calc(-100% - 10px)); }
+.viz-tip .t-title { color: var(--muted); margin-bottom: 4px; }
+.viz-tip .t-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.viz-tip .t-row .k { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+.viz-tip .t-row .k i { width: 10px; height: 3px; border-radius: 2px; display: inline-block; }
+.viz-tip .t-row strong { font-variant-numeric: tabular-nums; }
+.viz-tip .t-total { border-top: 1px solid var(--border); margin-top: 5px; padding-top: 5px; }
+.hbars { display: grid; gap: 12px; padding: 8px 20px 20px; }
+.hbar { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 12px; outline: none; }
+.hbar .track { position: relative; height: 24px; }
+.hbar .fill { height: 20px; margin-top: 2px; border-radius: 0 4px 4px 0; min-width: 2px; background: var(--series-1); transition: opacity 0.12s; }
+.hbar .val { position: absolute; top: 2px; line-height: 20px; margin-left: 8px; font-size: 0.82rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.hbar:hover .fill, .hbar:focus-visible .fill { opacity: 0.8; }
+.hbar:focus-visible { box-shadow: 0 0 0 2px var(--primary); border-radius: 6px; }
+.filters { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 18px; }
+.filters .field { margin-bottom: 0; }
+.filters .check { display: flex; gap: 8px; align-items: center; font-weight: 500; padding-bottom: 9px; }
+.dim { opacity: 0.55; transition: opacity 0.15s; }

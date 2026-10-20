@@ -10,6 +10,7 @@ import { ClaimDetailPage } from './pages/ClaimDetailPage';
 import { ApprovalsPage } from './pages/ApprovalsPage';
 import { PolicyPage } from './pages/PolicyPage';
 import { UsersPage } from './pages/UsersPage';
+import { ReportsPage } from './pages/ReportsPage';
 
 const HOME: Record<Role, string> = { EMPLOYEE: '/claims', MANAGER: '/approvals', FINANCE: '/approvals', ADMIN: '/users' };
 
@@ -19,6 +20,12 @@ function RequireAuth() {
   if (status === 'loading') return <div className="center-screen"><span className="spinner" aria-label="Loading" /></div>;
   if (status === 'anonymous') return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   return <Outlet />;
+}
+
+/** Typing a URL for a screen your role cannot use sends you home instead of showing a wall of 403s. */
+function RequireRole({ roles }: { roles: Role[] }) {
+  const { user } = useAuth();
+  return roles.includes(user!.role) ? <Outlet /> : <Navigate to="/" replace />;
 }
 
 /** Sends the signed-in user to the screen they will use most. */
@@ -35,9 +42,16 @@ export function App() {
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route index element={<RoleHome />} />
-          <Route path="approvals" element={<ApprovalsPage />} />
           <Route path="policy" element={<PolicyPage />} />
-          <Route path="users" element={<UsersPage />} />
+          <Route element={<RequireRole roles={['MANAGER', 'FINANCE']} />}>
+            <Route path="approvals" element={<ApprovalsPage />} />
+          </Route>
+          <Route element={<RequireRole roles={['ADMIN']} />}>
+            <Route path="users" element={<UsersPage />} />
+          </Route>
+          <Route element={<RequireRole roles={['ADMIN', 'FINANCE']} />}>
+            <Route path="reports" element={<ReportsPage />} />
+          </Route>
           <Route path="claims" element={<MyClaimsPage />} />
           <Route path="claims/new" element={<NewClaimPage />} />
           <Route path="claims/:id" element={<ClaimDetailPage />} />
