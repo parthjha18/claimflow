@@ -48,7 +48,7 @@ public class Claim extends AuditedEntity {
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    @Column(nullable = false, length = 3, columnDefinition = "char(3)")
+    @Column(nullable = false, length = 3)
     private String currency = "INR";
 
     @Enumerated(EnumType.STRING)

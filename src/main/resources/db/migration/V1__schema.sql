@@ -64,7 +64,7 @@ CREATE TABLE claims (
     title                VARCHAR(200) NOT NULL,
     description          TEXT,
     total_amount         NUMERIC(14,2) NOT NULL DEFAULT 0 CHECK (total_amount >= 0),
-    currency             CHAR(3) NOT NULL DEFAULT 'INR',
+    currency             VARCHAR(3) NOT NULL DEFAULT 'INR',
     status               VARCHAR(20) NOT NULL DEFAULT 'DRAFT'
         CHECK (status IN ('DRAFT','SUBMITTED','MANAGER_APPROVED','FINANCE_APPROVED','PAID','REJECTED')),
     requires_finance     BOOLEAN NOT NULL DEFAULT FALSE,   -- decided at submit time from the policy
