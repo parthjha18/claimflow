@@ -145,5 +145,6 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.data.redis.port", () -> REDIS.getMappedPort(6379));
         registry.add("claimflow.storage.local-root", () -> STORAGE_DIR.toString());
         registry.add("spring.jpa.properties.hibernate.generate_statistics", () -> "true");
+        registry.add("claimflow.scheduling.enabled", () -> "false");   // tests call the jobs explicitly
     }
 }
