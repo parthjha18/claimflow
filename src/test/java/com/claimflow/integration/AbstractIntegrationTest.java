@@ -26,7 +26,14 @@ public abstract class AbstractIntegrationTest {
     static final GenericContainer<?> REDIS =
             new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
 
+    static final java.nio.file.Path STORAGE_DIR;
+
     static {
+        try {
+            STORAGE_DIR = java.nio.file.Files.createTempDirectory("claimflow-test-uploads");
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException(e);
+        }
         POSTGRES.start();
         REDIS.start();
     }
@@ -46,6 +53,23 @@ public abstract class AbstractIntegrationTest {
             h.set(headers[i], headers[i + 1]);
         }
         return rest.exchange(path, method, new HttpEntity<>(body, h), JsonNode.class);
+    }
+
+    protected ResponseEntity<JsonNode> upload(String path, String token, String filename, String contentType,
+                                              byte[] content) {
+        HttpHeaders fileHeaders = new HttpHeaders();
+        fileHeaders.setContentType(MediaType.parseMediaType(contentType));
+        org.springframework.util.LinkedMultiValueMap<String, Object> form = new org.springframework.util.LinkedMultiValueMap<>();
+        form.add("file", new HttpEntity<>(new org.springframework.core.io.ByteArrayResource(content) {
+            @Override
+            public String getFilename() {
+                return filename;
+            }
+        }, fileHeaders));
+        HttpHeaders h = new HttpHeaders();
+        h.setContentType(MediaType.MULTIPART_FORM_DATA);
+        h.setBearerAuth(token);
+        return rest.exchange(path, HttpMethod.POST, new HttpEntity<>(form, h), JsonNode.class);
     }
 
     public record Actor(String id, String email, String token) {
@@ -90,5 +114,6 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.password", POSTGRES::getPassword);
         registry.add("spring.data.redis.host", REDIS::getHost);
         registry.add("spring.data.redis.port", () -> REDIS.getMappedPort(6379));
+        registry.add("claimflow.storage.local-root", () -> STORAGE_DIR.toString());
     }
 }
