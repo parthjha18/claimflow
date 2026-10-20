@@ -32,7 +32,7 @@ public class IdempotencyKey {
     private UUID userId;
 
     @Column(name = "idem_key", nullable = false, updatable = false)
-    private String key;
+    private String idemKey;
 
     @Column(nullable = false, updatable = false)
     private String endpoint;
@@ -60,7 +60,7 @@ public class IdempotencyKey {
 
     public IdempotencyKey(UUID userId, String key, String endpoint, String requestHash) {
         this.userId = userId;
-        this.key = key;
+        this.idemKey = key;
         this.endpoint = endpoint;
         this.requestHash = requestHash;
     }
