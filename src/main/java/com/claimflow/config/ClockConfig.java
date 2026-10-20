@@ -1,0 +1,16 @@
+package com.claimflow.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Clock;
+
+/** Injectable clock so time-dependent code (tokens, escalation) can be tested deterministically. */
+@Configuration
+public class ClockConfig {
+
+    @Bean
+    Clock clock() {
+        return Clock.systemUTC();
+    }
+}

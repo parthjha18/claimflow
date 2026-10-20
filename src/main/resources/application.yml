@@ -48,3 +48,11 @@ management:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+claimflow:
+  security:
+    jwt:
+      # Override JWT_SECRET in every real deployment; this default exists so `docker compose up` works out of the box.
+      secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
+      access-ttl: PT15M
+      refresh-ttl: P7D
