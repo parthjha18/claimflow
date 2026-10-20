@@ -8,6 +8,8 @@ import { MyClaimsPage } from './pages/MyClaimsPage';
 import { NewClaimPage } from './pages/NewClaimPage';
 import { ClaimDetailPage } from './pages/ClaimDetailPage';
 import { ApprovalsPage } from './pages/ApprovalsPage';
+import { PolicyPage } from './pages/PolicyPage';
+import { UsersPage } from './pages/UsersPage';
 
 const HOME: Record<Role, string> = { EMPLOYEE: '/claims', MANAGER: '/approvals', FINANCE: '/approvals', ADMIN: '/users' };
 
@@ -34,6 +36,8 @@ export function App() {
         <Route element={<Layout />}>
           <Route index element={<RoleHome />} />
           <Route path="approvals" element={<ApprovalsPage />} />
+          <Route path="policy" element={<PolicyPage />} />
+          <Route path="users" element={<UsersPage />} />
           <Route path="claims" element={<MyClaimsPage />} />
           <Route path="claims/new" element={<NewClaimPage />} />
           <Route path="claims/:id" element={<ClaimDetailPage />} />
